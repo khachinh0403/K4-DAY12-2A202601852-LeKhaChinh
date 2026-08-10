@@ -1,0 +1,33 @@
+CP5 LIVE ENDPOINT EVIDENCE
+Timestamp: 2026-08-10 (Asia/Saigon)
+Base URL: https://day12-chat-1u5v.onrender.com
+
+Endpoint mapping used by this lab:
+  /health -> /healthz
+  /ready  -> /readyz
+  /ask    -> /chat
+
+$ curl -i https://day12-chat-1u5v.onrender.com/healthz
+HTTP/1.1 200 OK
+{"status":"ok","service":"day12-chat-service","version":"1.0.0"}
+
+$ curl -i https://day12-chat-1u5v.onrender.com/readyz
+HTTP/1.1 200 OK
+{"status":"ready","redis":true}
+
+$ curl -i -X POST https://day12-chat-1u5v.onrender.com/chat \
+    -H "Content-Type: application/json" \
+    -d '{"message":"Hello"}'
+HTTP/1.1 401 Unauthorized
+{"detail":"invalid or missing bearer token"}
+
+$ curl -i -X POST https://day12-chat-1u5v.onrender.com/chat \
+    -H "Content-Type: application/json" \
+    -H "Authorization: Bearer [REDACTED]" \
+    -H "X-Client-Id: cp5-evidence" \
+    -d '{"message":"Deploy la gi?"}'
+HTTP/1.1 200 OK
+{"reply":"Ngắn gọn: Deploy la gi phụ thuộc vào ba yếu tố — cấu hình qua biến môi trường, health check để orchestrator biết trạng thái, và giới hạn tài nguyên.","client_id":"cp5-evidence","turns_before":0,"usd_cost":2.265e-05,"usage":{"prompt":3,"completion":37}}
+
+The live API token is intentionally redacted. Its value is stored only in the
+local .env file and the Render environment settings.
